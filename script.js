@@ -6,7 +6,7 @@ let shouldResetDisplay = false;
 // refactored state and functions ------------------------------
 
 const calc = {
-  display: "0",
+  display: "",
   firstValue: null,
   secondValue: null,
   operator: null,
@@ -24,7 +24,7 @@ function handleEquals() {}
 function handleOperator() {}
 function handleNumber() {}
 
-//refactored state and functions ------------------------------
+// refactored state and functions ------------------------------
 
 function add(a, b) {
   return a + b;
