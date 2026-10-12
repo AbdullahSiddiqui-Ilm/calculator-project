@@ -123,6 +123,9 @@ function operate(op, num1, num2) {
   }
 }
 
+// Event handler for all buttons
+// This will direct to correct function based off of which buttons are pressed
+
 for (let button of buttons) {
   button.addEventListener("click", (e) => {
     value = e.target.textContent;
