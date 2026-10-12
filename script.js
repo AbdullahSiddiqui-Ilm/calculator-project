@@ -13,9 +13,13 @@ const OPERATORS = ["+", "-", "*", "/"];
 
 // Functions to be activated by event
 
+function handleDisplay() {
+  inputDisplay.textContent = display;
+}
+
 function handleAC() {
   display = "";
-  inputDisplay.textContent = display;
+  handleDisplay();
   num1 = "";
   num2 = "";
   operator = "";
@@ -26,7 +30,7 @@ function handleC() {
   display = "";
   if (num2) {
     num2 = num2.slice(0, -1);
-    if ((num2 = "")) {
+    if (num2 === "") {
       display = num1 + operator;
     } else {
       display = num1 + operator + num2;
@@ -38,13 +42,10 @@ function handleC() {
     num1 = num1.slice(0, -1);
     display = num1;
   }
-  inputDisplay.textContent = display;
+  handleDisplay();
 }
 
-function handleDecimal(decimalNumber) {
-  let n = decimalNumber.toFixed(7);
-  return n;
-}
+function handleDecimal(decimalNumber) {}
 
 function handleEquals() {
   let result = operate(operator, Number(num1), Number(num2));
@@ -54,11 +55,10 @@ function handleEquals() {
     result = result.toString();
   }
   display = result;
-  inputDisplay.textContent = display;
+  handleDisplay();
   num1 = result;
   num2 = "";
   operator = "";
-  shouldResetDisplay = true;
   return;
 }
 
@@ -77,7 +77,7 @@ function handleOperator() {
   } else {
     operator = value;
     display = num1 + operator;
-    inputDisplay.textContent = display;
+    handleDisplay();
   }
 }
 
@@ -85,11 +85,11 @@ function handleNumber() {
   if (operator === "") {
     num1 = num1 + value;
     display = num1;
-    inputDisplay.textContent = display;
+    handleDisplay();
   } else if (operator && !num2) {
     num2 = num2 + value;
     display = num1 + operator + num2;
-    inputDisplay.textContent = display;
+    handleDisplay();
   }
 }
 
