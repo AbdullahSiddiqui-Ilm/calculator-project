@@ -41,11 +41,18 @@ function handleC() {
   inputDisplay.textContent = display;
 }
 
-function handleDecimal() {}
+function handleDecimal(decimalNumber) {
+  let n = decimalNumber.toFixed(7);
+  return n;
+}
 
 function handleEquals() {
   let result = operate(operator, Number(num1), Number(num2));
-  result = result.toString();
+  if (result % 1 != 0) {
+    result = result.toFixed(7);
+  } else {
+    result = result.toString();
+  }
   display = result;
   inputDisplay.textContent = display;
   num1 = result;
@@ -58,7 +65,11 @@ function handleEquals() {
 function handleOperator() {
   if (OPERATORS.includes(operator) && num1) {
     num1 = operate(operator, Number(num1), Number(num2));
-    num1 = num1.toString();
+    if (num1 % 1 != 0) {
+      num1 = num1.toFixed(6);
+    } else {
+      num1 = num1.toString();
+    }
     inputDisplay.textContent = num1;
     num2 = "";
     operator = value;
