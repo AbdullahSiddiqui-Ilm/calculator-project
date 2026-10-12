@@ -1,30 +1,71 @@
+//Global variavles:
+
+const buttons = document.querySelectorAll("button");
+const inputDisplay = document.querySelector(".input-display");
+
+let result = null;
+let value = null;
 let num1 = "";
 let num2 = "";
 let operator = "";
-let shouldResetDisplay = false;
-
-// refactored state and functions ------------------------------
-
-const calc = {
-  display: "",
-  firstValue: null,
-  secondValue: null,
-  operator: null,
-  waitingForNewValue: false,
-  shouldResetDisplay: false,
-  decimal: false,
-};
-
+let display = "";
 const OPERATORS = ["+", "-", "*", "/"];
 
-function handleAC() {}
-function handleC() {}
-function handleDecimal() {}
-function handleEquals() {}
-function handleOperator() {}
-function handleNumber() {}
+// Functions to be activated by event
 
-// refactored state and functions ------------------------------
+function handleAC() {
+  display = "";
+  inputDisplay.textContent = display;
+  num1 = "";
+  num2 = "";
+  operator = "";
+  return;
+}
+
+function handleC() {}
+
+function handleDecimal() {}
+
+function handleEquals() {
+  let result = operate(operator, Number(num1), Number(num2));
+  result = result.toString();
+  display = result;
+  inputDisplay.textContent = display;
+  num1 = result;
+  num2 = "";
+  operator = "";
+  shouldResetDisplay = true;
+  return;
+}
+
+function handleOperator() {
+  if (OPERATORS.includes(operator) && num1) {
+    num1 = operate(operator, Number(num1), Number(num2));
+    num1 = num1.toString();
+    inputDisplay.textContent = num1;
+    num2 = "";
+    operator = value;
+    return;
+  } else {
+    operator = value;
+    display = num1 + " " + operator;
+    inputDisplay.textContent = display;
+  }
+}
+
+function handleNumber() {
+  if (operator === "") {
+    num1 = num1 + value;
+    display = num1;
+    inputDisplay.textContent = display;
+  } else if (operator && !num2) {
+    num2 = num2 + value;
+    display = num1 + " " + operator + " " + num2;
+    inputDisplay.textContent = display;
+  }
+}
+
+// Simple calculation functions
 
 function add(a, b) {
   return a + b;
@@ -51,17 +92,13 @@ function operate(op, num1, num2) {
     return multiply(num1, num2);
   } else if (op === "/") {
     return divide(num1, num2);
-  } else {
-    return 0;
   }
 }
-
-const buttons = document.querySelectorAll("button");
-const inputDisplay = document.querySelector(".input-display");
 
 for (let button of buttons) {
   button.addEventListener("click", (e) => {
     value = e.target.textContent;
+    console.log(display);
 
     if (value === "AC") {
       handleAC();
@@ -75,40 +112,6 @@ for (let button of buttons) {
       handleOperator();
     } else {
       handleNumber();
-    }
-
-    if (e.target.textContent === "AC") {
-      inputDisplay.textContent = "";
-      num1 = "";
-      num2 = "";
-      operator = "";
-      return;
-    }
-    if (e.target.textContent === "=") {
-      let result = operate(operator, Number(num1), Number(num2));
-      inputDisplay.textContent = result;
-      num1 = result.toString();
-      num2 = "";
-      operator = "";
-      shouldResetDisplay = true;
-      return;
-    }
-    if ("+-*/".includes(e.target.textContent) && num1 && num2) {
-      num1 = operate(operator, Number(num1), Number(num2));
-      num1 = num1.toString();
-      inputDisplay.textContent = num1;
-      num2 = "";
-      operator = e.target.textContent;
-      return;
-    }
-    if ("+-*/".includes(e.target.textContent)) {
-      operator = e.target.textContent;
-    } else if (operator === "") {
-      num1 = num1 + e.target.textContent;
-      inputDisplay.textContent = num1;
-    } else if (operator && !num2) {
-      num2 = num2 + e.target.textContent;
-      inputDisplay.textContent = num2;
     }
   });
 }
