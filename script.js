@@ -22,7 +22,24 @@ function handleAC() {
   return;
 }
 
-function handleC() {}
+function handleC() {
+  display = "";
+  if (num2) {
+    num2 = num2.slice(0, -1);
+    if ((num2 = "")) {
+      display = num1 + operator;
+    } else {
+      display = num1 + operator + num2;
+    }
+  } else if (operator) {
+    operator = "";
+    display = num1;
+  } else if (num1) {
+    num1 = num1.slice(0, -1);
+    display = num1;
+  }
+  inputDisplay.textContent = display;
+}
 
 function handleDecimal() {}
 
@@ -48,7 +65,7 @@ function handleOperator() {
     return;
   } else {
     operator = value;
-    display = num1 + " " + operator;
+    display = num1 + operator;
     inputDisplay.textContent = display;
   }
 }
@@ -60,7 +77,7 @@ function handleNumber() {
     inputDisplay.textContent = display;
   } else if (operator && !num2) {
     num2 = num2 + value;
-    display = num1 + " " + operator + " " + num2;
+    display = num1 + operator + num2;
     inputDisplay.textContent = display;
   }
 }
