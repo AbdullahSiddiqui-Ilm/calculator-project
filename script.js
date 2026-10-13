@@ -18,11 +18,8 @@ function handleDisplay() {
 }
 
 function handleAC() {
-  display = "";
+  resetDisplayAndValues();
   handleDisplay();
-  num1 = "";
-  num2 = "";
-  operator = "";
   return;
 }
 
@@ -45,7 +42,7 @@ function handleC() {
   handleDisplay();
 }
 
-function handleDecimal(decimalNumber) {}
+function handleDecimal() {}
 
 function handleEquals() {
   let result = operate(operator, Number(num1), Number(num2));
@@ -59,6 +56,10 @@ function handleEquals() {
   num1 = result;
   num2 = "";
   operator = "";
+  if (num1 === "Infinity") {
+    display = "ERR";
+    handleDisplay();
+  }
   return;
 }
 
@@ -93,6 +94,15 @@ function handleNumber() {
   }
 }
 
+function resetDisplayAndValues() {
+  {
+    display = "";
+    num1 = "";
+    num2 = "";
+    operator = "";
+  }
+}
+
 // Simple calculation functions
 
 function add(a, b) {
@@ -111,6 +121,8 @@ function divide(a, b) {
   return a / b;
 }
 
+let divideByZeroFlag = false;
+
 function operate(op, num1, num2) {
   if (op === "+") {
     return add(num1, num2);
@@ -118,7 +130,7 @@ function operate(op, num1, num2) {
     return subtract(num1, num2);
   } else if (op === "*") {
     return multiply(num1, num2);
-  } else if (op === "/") {
+  } else {
     return divide(num1, num2);
   }
 }
