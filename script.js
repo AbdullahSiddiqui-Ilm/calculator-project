@@ -42,7 +42,17 @@ function handleC() {
   handleDisplay();
 }
 
-function handleDecimal() {}
+function handleDecimal() {
+  if (!num2) {
+    num1 = num1 + ".";
+    display = display + ".";
+    handleDisplay();
+  } else {
+    num2 = num2 + ".";
+    display = display + ".";
+    handleDisplay();
+  }
+}
 
 function handleEquals() {
   let result = operate(operator, Number(num1), Number(num2));
