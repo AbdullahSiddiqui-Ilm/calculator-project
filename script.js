@@ -151,7 +151,7 @@ function operate(op, num1, num2) {
 
 for (let button of buttons) {
   button.addEventListener("click", (e) => {
-    value = e.target.textContent;
+    value = e.target.value || e.target.textContent;
 
     if (shouldResetDisplay && (value === "." || /^\d$/.test(value))) {
       resetDisplayAndValues();
