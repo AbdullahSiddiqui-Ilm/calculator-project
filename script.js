@@ -3,114 +3,115 @@
 const buttons = document.querySelectorAll("button");
 const inputDisplay = document.querySelector(".input-display");
 
-let result = null;
 let value = null;
 let num1 = "";
 let num2 = "";
 let operator = "";
 let display = "";
 const OPERATORS = ["+", "-", "*", "/"];
+let shouldResetDisplay = false;
 
 // Functions to be activated by event
 
-function handleDisplay() {
-  inputDisplay.textContent = display;
+function renderDisplay() {
+  inputDisplay.textContent = num1 + operator + num2;
 }
 
 function handleAC() {
   resetDisplayAndValues();
-  handleDisplay();
+  renderDisplay();
   return;
 }
 
 function handleC() {
-  display = "";
   if (num2) {
     num2 = num2.slice(0, -1);
-    if (num2 === "") {
-      display = num1 + operator;
-    } else {
-      display = num1 + operator + num2;
-    }
   } else if (operator) {
     operator = "";
-    display = num1;
   } else if (num1) {
     num1 = num1.slice(0, -1);
-    display = num1;
   }
-  handleDisplay();
+  renderDisplay();
 }
 
 function handleDecimal() {
-  if (!num2) {
-    num1 = num1 + ".";
-    display = display + ".";
-    handleDisplay();
+  if (operator) {
+    if (!num2.includes(".")) {
+      num2 += num2 === "" ? "0." : ".";
+    }
   } else {
-    num2 = num2 + ".";
-    display = display + ".";
-    handleDisplay();
+    if (!num1.includes(".")) {
+      num1 += num1 === "" ? "0." : ".";
+    }
   }
+  renderDisplay();
+}
+
+function convertToPercentage() {
+  if (operator) {
+    if (num2 === "") return;
+    num2 = (Number(num2) / 100).toString();
+  } else {
+    if (num1 === "" || num1 === "ERR") return;
+    num1 = (Number(num1) / 100).toString();
+  }
+  renderDisplay();
 }
 
 function handleEquals() {
-  let result = operate(operator, Number(num1), Number(num2));
-  if (result % 1 != 0) {
-    result = result.toFixed(7);
-  } else {
-    result = result.toString();
+  if (num1 === "" || num2 === "" || operator === "") {
+    return;
   }
-  display = result;
-  handleDisplay();
-  num1 = result;
+  const result = operate(operator, Number(num1), Number(num2));
+  if (!Number.isFinite(result)) {
+    num1 = "ERR";
+  } else if (Number.isInteger(result)) {
+    num1 = result.toString();
+  } else {
+    num1 = result.toFixed(7);
+  }
   num2 = "";
   operator = "";
-  if (num1 === "Infinity") {
-    display = "ERR";
-    handleDisplay();
-  }
-  return;
+  shouldResetDisplay = true;
+  renderDisplay();
 }
 
 function handleOperator() {
-  if (OPERATORS.includes(operator) && num1) {
-    num1 = operate(operator, Number(num1), Number(num2));
-    if (num1 % 1 != 0) {
-      num1 = num1.toFixed(6);
-    } else {
-      num1 = num1.toString();
-    }
-    inputDisplay.textContent = num1;
-    num2 = "";
-    operator = value;
+  if (num1 === "" || num1 === "ERR") {
     return;
-  } else {
-    operator = value;
-    display = num1 + operator;
-    handleDisplay();
   }
+  if (operator !== "" && num2 !== "") {
+    const result = operate(operator, Number(num1), Number(num2));
+    if (!Number.isFinite(result)) {
+      num1 = "ERR";
+      num2 = "";
+      operator = "";
+      shouldResetDisplay = true;
+      renderDisplay();
+      return;
+    }
+    num1 = Number.isInteger(result) ? result.toString() : result.toFixed(7);
+    num2 = "";
+  }
+  operator = value;
+  shouldResetDisplay = false;
+  renderDisplay();
 }
 
 function handleNumber() {
-  if (operator === "") {
-    num1 = num1 + value;
-    display = num1;
-    handleDisplay();
-  } else if (operator && !num2) {
-    num2 = num2 + value;
-    display = num1 + operator + num2;
-    handleDisplay();
+  if (operator) {
+    num2 += value;
+  } else {
+    num1 += value;
   }
+  renderDisplay();
 }
 
 function resetDisplayAndValues() {
-  {
-    display = "";
-    num1 = "";
-    num2 = "";
-    operator = "";
-  }
+  display = "";
+  num1 = "";
+  num2 = "";
+  operator = "";
 }
 
 // Simple calculation functions
@@ -151,7 +152,11 @@ function operate(op, num1, num2) {
 for (let button of buttons) {
   button.addEventListener("click", (e) => {
     value = e.target.textContent;
-    console.log(display);
+
+    if (shouldResetDisplay && (value === "." || /^\d$/.test(value))) {
+      resetDisplayAndValues();
+      shouldResetDisplay = false;
+    }
 
     if (value === "AC") {
       handleAC();
@@ -163,6 +168,8 @@ for (let button of buttons) {
       handleEquals();
     } else if (OPERATORS.includes(value)) {
       handleOperator();
+    } else if (value === "%") {
+      convertToPercentage();
     } else {
       handleNumber();
     }
