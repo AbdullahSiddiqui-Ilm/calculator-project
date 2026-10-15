@@ -14,7 +14,9 @@ let shouldResetDisplay = false;
 // Functions to be activated by event
 
 function renderDisplay() {
-  inputDisplay.textContent = num1 + operator + num2;
+  const displayOperator =
+    operator === "/" ? "÷" : operator === "*" ? "×" : operator;
+  inputDisplay.textContent = num1 + displayOperator + num2;
 }
 
 function handleAC() {
