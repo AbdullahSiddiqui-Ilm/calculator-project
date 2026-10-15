@@ -70,7 +70,7 @@ function handleEquals() {
   } else if (Number.isInteger(result)) {
     num1 = result.toString();
   } else {
-    num1 = result.toFixed(7);
+    num1 = Number(result.toFixed(7)).toString();
   }
   num2 = "";
   operator = "";
@@ -92,7 +92,9 @@ function handleOperator() {
       renderDisplay();
       return;
     }
-    num1 = Number.isInteger(result) ? result.toString() : result.toFixed(7);
+    num1 = Number.isInteger(result)
+      ? result.toString()
+      : Number(result.toFixed(7)).toString();
     num2 = "";
   }
   operator = value;
@@ -101,11 +103,10 @@ function handleOperator() {
 }
 
 function handleNumber() {
-  if (operator) {
-    num2 += value;
-  } else {
-    num1 += value;
-  }
+  let current = operator ? num2 : num1;
+  current = current === "0" ? value : current + value;
+  if (operator) num2 = current;
+  else num1 = current;
   renderDisplay();
 }
 
@@ -133,8 +134,6 @@ function multiply(a, b) {
 function divide(a, b) {
   return a / b;
 }
-
-let divideByZeroFlag = false;
 
 function operate(op, num1, num2) {
   if (op === "+") {
