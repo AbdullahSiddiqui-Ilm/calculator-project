@@ -31,6 +31,7 @@ function handleC() {
   } else if (operator) {
     operator = "";
   } else if (num1) {
+    if (num1 === "ERR") return;
     num1 = num1.slice(0, -1);
   }
   renderDisplay();
